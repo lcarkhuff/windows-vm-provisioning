@@ -34,7 +34,3 @@ variable "memory_mb" {
   default = 4096
 }
 
-variable "disk_gb"   {
-  type = number
-  default = 95
-}
