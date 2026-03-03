@@ -36,5 +36,5 @@ variable "memory_mb" {
 
 variable "disk_gb"   {
   type = number
-  default = 90
+  default = 95 GiB
 }
