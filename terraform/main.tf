@@ -64,7 +64,7 @@ resource "vsphere_virtual_machine" "vm" {
 
     customize {
       network_interface {
-        ipv4_address = var.ipv4_address
+        ipv4_address = var.address
         ipv4_netmask = var.subnet_mask
       }
 
