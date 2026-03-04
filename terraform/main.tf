@@ -70,11 +70,11 @@ resource "vsphere_virtual_machine" "vm" {
       
       ipv4_gateway = var.ipv4_gateway
       
-      dns_server_list =var.dns_server_list
+      dns_server_list = var.dns_servers
       
 
       windows_options {
-        computer_name =var.vm_name
+        computer_name = var.vm_name
       }
     }
   }
