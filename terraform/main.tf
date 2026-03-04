@@ -61,5 +61,21 @@ resource "vsphere_virtual_machine" "vm" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
+
+    customize {
+      network_interface {
+        ipv4_address = var.ipv4_address
+        ipv4_netmask = var.subnet_mask
+      }
+      
+      ipv4_gateway = var.ipv4_gateway
+      
+      dns_server_list =var.dns_server_list
+      
+
+      windows_options {
+        computer_name =var.vm_name
+      }
+    }
   }
 }
