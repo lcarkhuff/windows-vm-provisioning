@@ -67,11 +67,11 @@ resource "vsphere_virtual_machine" "vm" {
         ipv4_address = var.ipv4_address
         ipv4_netmask = var.subnet_mask
       }
-      
-      ipv4_gateway = var.ipv4_gateway
-      
+
+      ipv4_gateway = var.gateway
+
       dns_server_list = var.dns_servers
-      
+
 
       windows_options {
         computer_name = var.vm_name
