@@ -47,6 +47,7 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus = var.cpu
   memory   = var.memory_mb
   guest_id = data.vsphere_virtual_machine.template.guest_id
+  firmware = "efi"
 
   network_interface {
     network_id   = data.vsphere_network.network.id
