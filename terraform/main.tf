@@ -60,49 +60,47 @@ resource "vsphere_virtual_machine" "vm" {
     thin_provisioned = true
   }
 
-  clone {
-    template_uuid = data.vsphere_virtual_machine.template.id
+  
+clone {
+  template_uuid = data.vsphere_virtual_machine.template.id
 
-    customize {
-      network_interface {
-        ipv4_address = var.ip_address
-        ipv4_netmask = var.subnet_mask
-      }
+  customize {
+    network_interface {
+      ipv4_address = var.ip_address
+      ipv4_netmask = var.subnet_mask
+    }
 
-      ipv4_gateway = var.gateway
+    ipv4_gateway    = var.gateway
+    dns_server_list = var.dns_servers
 
-      dns_server_list = var.dns_servers
+    windows_options {
+      computer_name = var.vm_name
+      join_domain   = var.domain_name
+      domain_ou     = var.domain_ou
 
-
-      windows_options {
-        computer_name       = var.vm_name
-        join_domain         = var.domain_name
-        domain_ou           = var.domain_ou
-
-        run_once_command_list = [
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"
-        ]
-      }
+      run_once_command_list = [
+        "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"
+      ]
     }
   }
 }
 
-locals {  
+locals {
   bootstrap_ps = <<-PS
-      $ErrorActionPreference='Stop';
+$ErrorActionPreference='Stop';
 
-      $u='${var.local_admin_user}';
+$u='${var.local_admin_user}';
 
-      $p=ConvertTo-SecureString '${var.local_admin_password}' -AsPlainText -Force;
+$p=ConvertTo-SecureString '${var.local_admin_password}' -AsPlainText -Force;
 
-      if (-not (Get-LocalUser -Name $u -ErrorAction SilentlyContinue)) {
-        New-LocalUser -Name $u -Password $p -PasswordNeverExpires:$true -AccountNeverExpires:$true;
-      };
+if (-not (Get-LocalUser -Name $u -ErrorAction SilentlyContinue)) {
+  New-LocalUser -Name $u -Password $p -PasswordNeverExpires:$true -AccountNeverExpires:$true;
+};
 
-      Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyContinue;
+Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyContinue;
 
-      Disable-LocalUser -Name 'Administrator';
-    PS
+Disable-LocalUser -Name 'Administrator';
+PS
 
-    bootstrap_b64 = base64encode(textencode(local.bootstrap_ps, "UTF-16LE"))
+  bootstrap_b64 = base64encode(textencode(local.bootstrap_ps, "UTF-16LE"))
 }
