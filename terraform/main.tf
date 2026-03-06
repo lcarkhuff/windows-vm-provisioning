@@ -80,7 +80,8 @@ resource "vsphere_virtual_machine" "vm" {
         domain_ou           = var.domain_ou
 
         run_once_command_list = [
-          "powershell.exe -NoProfile -executionpolicy bypass -command \"${replace(replace(replace(local.bootstrap_ps, "\n", "; "), "\"", "\\\""), "\r", "")}\"""]
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"
+        ]
       }
     }
   }
@@ -89,12 +90,19 @@ resource "vsphere_virtual_machine" "vm" {
 locals {  
   bootstrap_ps = <<-PS
       $ErrorActionPreference='Stop';
+
       $u='${var.local_admin_user}';
+
       $p=ConvertTo-SecureString '${var.local_admin_password}' -AsPlainText -Force;
+
       if (-not (Get-LocalUser -Name $u -ErrorAction SilentlyContinue)) {
         New-LocalUser -Name $u -Password $p -PasswordNeverExpires:$true -AccountNeverExpires:$true;
       };
+
       Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyContinue;
+
       Disable-LocalUser -Name 'Administrator';
     PS
+
+    bootstrap_b64 = base64encode(textencode(local.bootstrap_ps, "UTF-16LE"))
 }
