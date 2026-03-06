@@ -75,8 +75,26 @@ resource "vsphere_virtual_machine" "vm" {
 
 
       windows_options {
-        computer_name = var.vm_name
+        computer_name       = var.vm_name
+        join_domain         = var.domain_name
+        domain_ou           = var.domain_ou
+
+        run_once_command_list = [
+          "powershell.exe -NoProfile -executionpolicy bypass -command \"${replace(replace(replace(local.bootstrap_ps, "\n", "; "), "\"", "\\\""), "\r", "")}\"""]
       }
     }
   }
+}
+
+locals {  
+  bootstrap_ps = <<-PS
+      $ErrorActionPreference='Stop';
+      $u='${var.local_admin_user}';
+      $p=ConvertTo-SecureString '${var.local_admin_password}' -AsPlainText -Force;
+      if (-not (Get-LocalUser -Name $u -ErrorAction SilentlyContinue)) {
+        New-LocalUser -Name $u -Password $p -PasswordNeverExpires:$true -AccountNeverExpires:$true;
+      };
+      Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyContinue;
+      Disable-LocalUser -Name 'Administrator';
+    PS
 }
