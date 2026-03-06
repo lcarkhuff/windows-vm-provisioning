@@ -55,22 +55,13 @@ variable "dns_servers" {
   type = list(string)
 }
 
-variable "admin_password" {
-  description = "Administrator admin_password
-  type   = string
-  sensitive  = true
-}
-
 
 variable "domain_name" { type = string }
-variable "domain_user" { type = string }
-variable "domain_password" {
-  type      = string
-  sensitive = true
-}
+
 variable "domain_ou" { type = string } # "OU=Servers,DC=vermeermfg,DC=com"
 
 variable "local_admin_user" { type = string }
+
 variable "local_admin_password" {
   type      = string
   sensitive = true
