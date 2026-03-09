@@ -59,6 +59,7 @@ resource "vsphere_virtual_machine" "vm" {
     size             = data.vsphere_virtual_machine.template.disks[0].size
     thin_provisioned = true
   }
+}
 
   
 clone {
