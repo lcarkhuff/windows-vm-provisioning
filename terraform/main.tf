@@ -62,29 +62,29 @@ resource "vsphere_virtual_machine" "vm" {
 
 
 
-clone {
-  template_uuid = data.vsphere_virtual_machine.template.id
+  clone {
+    template_uuid = data.vsphere_virtual_machine.template.id
 
-  customize {
-    network_interface {
-      ipv4_address = var.ip_address
-      ipv4_netmask = var.subnet_mask
-    }
+    customize {
+      network_interface {
+        ipv4_address = var.ip_address
+        ipv4_netmask = var.subnet_mask
+      }
 
-    ipv4_gateway    = var.gateway
-    dns_server_list = var.dns_servers
+      ipv4_gateway    = var.gateway
+      dns_server_list = var.dns_servers
 
-    windows_options {
-      computer_name = var.vm_name
-      join_domain   = var.domain_name
-      domain_ou     = var.domain_ou
+      windows_options {
+        computer_name = var.vm_name
+        join_domain   = var.domain_name
+        domain_ou     = var.domain_ou
 
-      run_once_command_list = [
-        "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"
-      ]
+        run_once_command_list = [
+          "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"
+        ]
+      }
     }
   }
-}
 }
 
 locals {
@@ -104,5 +104,7 @@ Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyCon
 Disable-LocalUser -Name 'Administrator';
 PS
 
-  bootstrap_b64 = base64encode(textencode(local.bootstrap_ps, "UTF-16LE"))
+  
+bootstrap_b64 = textencodebase64(local.bootstrap_ps, "UTF-16LE")
 }
+
