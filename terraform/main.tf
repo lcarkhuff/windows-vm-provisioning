@@ -104,7 +104,7 @@ Add-LocalGroupMember -Group 'Administrators' -Member $u -ErrorAction SilentlyCon
 Disable-LocalUser -Name 'Administrator';
 PS
 
-  
-bootstrap_b64 = textencodebase64(local.bootstrap_ps, "UTF-16LE")
+
+  bootstrap_b64 = textencodebase64(local.bootstrap_ps, "UTF-16LE")
 }
 
