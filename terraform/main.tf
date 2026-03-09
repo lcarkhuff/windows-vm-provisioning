@@ -75,11 +75,11 @@ resource "vsphere_virtual_machine" "vm" {
       dns_server_list = var.dns_servers
 
       windows_options {
-        computer_name = var.vm_name
-        join_domain   = var.domain_name
-        domain_admin_user = var.ad_join_user
+        computer_name         = var.vm_name
+        join_domain           = var.domain_name
+        domain_admin_user     = var.ad_join_user
         domain_admin_password = var.ad_join_password
-        domain_ou     = var.domain_ou
+        domain_ou             = var.domain_ou
 
         run_once_command_list = [
           "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${local.bootstrap_b64}"

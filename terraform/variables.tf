@@ -55,16 +55,23 @@ variable "dns_servers" {
   type = list(string)
 }
 
-variable "domain_admin_user" {
-  type      = string
-  sensitive = true
-}
-
 variable "domain_admin_password" {
   type      = string
   sensitive = true
 }
 
+variable "domain_admin_user" {
+  type      = string
+  sensitive = true
+}
+
+variable "ad_join_user" {
+  type = string
+}
+
+variable "ad_join_password" {
+  type = string
+}
 
 variable "domain_name" { type = string }
 
